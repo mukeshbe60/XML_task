@@ -1,0 +1,125 @@
+package hari1
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkConf
+import org.apache.spark.sql.SparkSession
+import sys.process._
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.Row
+import java.util
+import org.apache.spark.sql
+
+
+
+
+object obj
+{
+  
+ def main(args:Array[String]):Unit={
+   val conf = new SparkConf().setAppName("first").setMaster("local[*]")
+   val sc = new SparkContext(conf)
+    sc.setLogLevel("ERROR")
+    
+     val spark = SparkSession
+  .builder()
+  .getOrCreate()
+    import spark.implicits._
+     println("===============Started=============")
+    
+  // val sourcedata = spark.read.format("csv").option("header","true").load("file:///E:/data/usdata.csv")
+   //sourcedata.show()
+   
+   
+    
+   
+   //sourcedata.createOrReplaceTempView("Haritable")
+   
+   
+   //println("===============Filtered data=============")
+   
+   //val filterdata = spark.sql("select * from Haritable where age>40" )
+   
+   //filterdata.show()
+   
+   
+   //println("===============Write data in all formats=============")
+   
+   //val csvdata = filterdata.write.format("csv").mode("overwrite").save("file:///E:/Write data in all formats/csvdata")
+  
+   //val jsondata = filterdata.write.format("json").mode("overwrite").save("file:///E:/Write data in all formats/jsondata")
+   
+  // val parquetdata =  filterdata.write.format("parquet").mode("overwrite").save("file:///E:/Write data in all formats/parquetdata")
+   
+   //val orcdata =  filterdata.write.format("orc").mode("overwrite").save("file:///E:/Write data in all formats/orcdata")
+  
+  
+   
+   //println("===============Converting to RDD from DF=============")
+   
+   
+   //val filterdatardd = spark.sql("select * from Haritable where age<20" ).map(x => x.toString()).rdd
+   
+  // filterdatardd.foreach(println)
+   
+  // println
+   
+    //println("=====================Flattendata================")
+   
+   //val flattendata = filterdatardd.flatMap(x => x.split(","))
+   
+   //flattendata.take(10).foreach(println)
+   
+   println("===============Xml data=============")
+   
+   val xmldata = spark.read.format("com.databricks.spark.xml").option("rootTag", "Default").option("rowTag", "Item").load("file:///E:/data/xmldata.xml")
+   
+   xmldata.show()
+   
+   xmldata.createOrReplaceTempView("testtable")
+   xmldata.printSchema()
+   
+   val filtercitydata = spark.sql("select * from testtable where PlaceCity = 'Morteau'")
+   
+      filtercitydata.show()
+      
+   
+   
+   
+    println("===============Write Xml data to local=============")
+   
+   val xmlwritedata = xmldata.write.format("com.databricks.spark.xml").mode("overwrite").save("file:///E:/Write data in all formats/xmldata")
+   val filtercitywritedata = filtercitydata.write.format("com.databricks.spark.xml").mode("overwrite").save("file:///E:/Write data in all formats/xmlfiltereddata")
+   
+   
+   
+   
+   
+   
+    println("===============done=============")
+   
+   
+   
+   
+   
+   
+   
+    
+   
+    
+  
+    
+    
+ 
+
+    
+    
+    
+  
+  
+    
+    
+   
+       
+         
+     
+  }
+}
